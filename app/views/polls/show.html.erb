@@ -1,0 +1,13 @@
+<p>
+  <b>Name:</b>
+  <%=h @poll.name %>
+</p>
+
+<p>
+  <b>Instructions:</b>
+  <%=h @poll.instructions %>
+</p>
+
+
+<%= link_to 'Edit', edit_poll_path(@poll) %> |
+<%= link_to 'Back', polls_path %>
