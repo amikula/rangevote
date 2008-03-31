@@ -4,10 +4,62 @@
 </p>
 
 <p>
-  <b>Instructions:</b>
-  <%=h @poll.instructions %>
+  <b>Instructions:</b><br>
+  <% @poll.instructions.each_line do |line| %>
+    <%=h line %><br>
+  <% end %>
 </p>
 
-
-<%= link_to 'Edit', edit_poll_path(@poll) %> |
-<%= link_to 'Back', polls_path %>
+<% results = @poll.results %>
+<% if results %>
+  <div style="margin-top: 2em; background-color: #dddddd; float: left; clear: both; padding: 1em;">
+    <b>Summary:</b>
+    <table style="margin-top: 0.5em; border-spacing: 2em 0.1em;">
+      <% winning = results.detect{|result| result.quorum?} -%>
+      <tr><td style="text-align: right">Top Candidate:</td><td><%=winning.candidate%></td></tr>
+      <tr><td style="text-align: right">Points:</td><td><%=winning.total%></td></tr>
+      <tr><td style="text-align: right">Average vote:</td><td><%=winning.average%></td></tr>
+      <tr><td style="text-align: right">Candidate vote count:</td><td><%=winning.count%></td></tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+      <tr><td style="text-align: right">Total Votes:</td><td><%=@poll.votes.count%></td></tr>
+    </table>
+  </div>
+  <div style="margin-top: 2em; background-color: #dddddd; float: left; clear: both; padding: 1em;">
+    <b>Results:</b>
+    <table style="margin-top: 0.5em;">
+    <% results.each do |result| %>
+      <tr class="<%=result.quorum? ? 'quorum' : 'noquorum' %>">
+        <td><%=h result.candidate %></td>
+        <td<%= " style='background-color: #{range_color_for(result.average)};'" if result.quorum? %>>
+          <%= result.average %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+    <div style="margin-top: 0.5em; width: 250px;">
+      Note: <span style="text-decoration: line-through;">Strikethrough</span>
+      indicates that the candidate does not have a
+      <%= link_to "quorum", "http://rangevoting.org/RuleD.html" %>, and
+      therefore does not qualify to win.
+    </div>
+  </div>
+  <div style="margin-top: 2em; background-color: #dddddd; float: left; clear: both; padding: 1em;">
+    <b>Votes:</b>
+    <table style="margin-top: 0.5em;">
+      <tr>
+        <th>Name</th>
+        <% @poll.candidates.each do |candidate| %>
+        <th><%=candidate%></th>
+        <% end %>
+      </tr>
+      <% @poll.votes.each do |vote| %>
+      <tr>
+        <td><%=vote.name%></td>
+        <% vote.ratings.each do |rating| %>
+        <td style="background-color: <%=range_color_for(rating)%>;"><%=rating%></td>
+        <% end %>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

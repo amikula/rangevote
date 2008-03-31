@@ -1,0 +1,47 @@
+<p>
+  <b>Name:</b>
+  <%=h @poll.name %>
+</p>
+
+<p>
+  <b>Instructions:</b><br>
+  <% @poll.instructions.each_line do |line| %>
+    <%=h line %><br>
+  <% end %>
+</p>
+
+<p>
+  <b>Candidates:</b>
+  <% form_tag({:controller => :polls, :action => :record_vote, :id => @poll.id}) do %>
+    <table>
+    <% @poll.candidates.each_with_index do |candidate, i| %>
+      <tr>
+        <td>
+          <%=h candidate %>
+        </td>
+        <td id="value<%=i%>" style="padding: 5px; border: 2px solid black; width: 1em;">
+          X
+        </td>
+        <td>
+          <%= hidden_field_tag "vote#{i}", 50 %>
+          <div id="slider<%= i %>" style="background: gray; width: 200px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled()">
+            <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled(); $('no_opinion<%=i%>').checked=false;">&nbsp;</div>
+          </div>
+          <script language="javascript">
+            sliderObject<%=i%> = new Control.Slider("handle<%= i %>", "slider<%=i%>", {range:$R(0,99), sliderValue:$('vote<%= i %>').value, onChange:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, onSlide:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, disabled:true});
+
+            // Sync background color and slider to input value
+            value = $('vote<%=i%>').value;
+            setValue('vote<%=i%>', $('value<%=i%>'), value);
+          </script>
+        </td>
+        <td>
+          <%= check_box_tag "no_opinion#{i}", nil, true %> no opinion
+        </td>
+      </tr>
+    <% end %>
+    </table>
+    Name: <%= text_field_tag "voter_name" %><br>
+    <%= submit_tag "Vote" %>
+  <% end %>
+</p>
