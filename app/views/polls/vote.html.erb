@@ -10,6 +10,10 @@
   <% end %>
 </p>
 
+<script language="javascript">
+  sliderObject = [];
+</script>
+
 <p>
   <b>Candidates:</b>
   <% form_tag({:controller => :polls, :action => :record_vote, :id => @poll.id}) do %>
@@ -24,23 +28,44 @@
         </td>
         <td>
           <%= hidden_field_tag "vote#{i}", 50 %>
-          <div id="slider<%= i %>" style="background: gray; width: 200px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled(); $('no_opinion<%=i%>').checked=false;">
-            <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled(); $('no_opinion<%=i%>').checked=false;">&nbsp;</div>
+          <div id="slider<%= i %>" style="background: gray; width: 200px; height: 25px;" onMouseDown="if ($('no_opinion<%=i%>').checked) $('no_opinion<%=i%>').click();">
+            <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="if ($('no_opinion<%=i%>').checked) $('no_opinion<%=i%>').click();">&nbsp;</div>
           </div>
         </td>
         <td>
-          <%= check_box_tag "no_opinion#{i}", nil, true %> no opinion
+          <%= check_box_tag "no_opinion#{i}", nil, true, :onClick => "handleCheckboxClick(#{i}, this.checked);" %> no opinion
           <script language="javascript">
-            sliderObject<%=i%> = new Control.Slider("handle<%= i %>", "slider<%=i%>", {range:$R(0,99), sliderValue:$('vote<%= i %>').value, onChange:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, onSlide:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, disabled:true});
+            sliderObject[<%=i%>] = new Control.Slider("handle<%= i %>", "slider<%=i%>", {range:$R(0,99), sliderValue:$('vote<%= i %>').value, onChange:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, onSlide:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, disabled:true});
 
             // Sync background color and slider to input value
-            value = $('vote<%=i%>').value;
-            setValue('vote<%=i%>', $('value<%=i%>'), value);
+            if($('no_opinion<%=i%>').checked) {
+              $('value<%=i%>').innerHTML="X";
+              $('value<%=i%>').style.backgroundColor="#ffffff";
+            } else {
+              value = $('vote<%=i%>').value;
+              setValue($('vote<%=i%>'), $('value<%=i%>'), value);
+            }
           </script>
         </td>
       </tr>
     <% end %>
     </table>
+
+    <script language="javascript">
+      function handleCheckboxClick(index, checked) {
+        if (checked) {
+          valueBox = $('value'+index)
+          valueBox.innerHTML='X';
+          valueBox.style.backgroundColor='#ffffff';
+          sliderObject[index].setDisabled();
+        } else {
+          value = $('vote'+index).value;
+          setValue($('vote'+index), $('value'+index), value);
+          sliderObject[index].setEnabled();
+        }
+      }
+    </script>
+
     Name: <%= text_field_tag "voter_name" %><br>
     <%= submit_tag "Vote" %>
   <% end %>
