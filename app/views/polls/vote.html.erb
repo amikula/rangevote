@@ -24,9 +24,12 @@
         </td>
         <td>
           <%= hidden_field_tag "vote#{i}", 50 %>
-          <div id="slider<%= i %>" style="background: gray; width: 200px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled()">
+          <div id="slider<%= i %>" style="background: gray; width: 200px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled(); $('no_opinion<%=i%>').checked=false;">
             <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="sliderObject<%=i%>.setEnabled(); $('no_opinion<%=i%>').checked=false;">&nbsp;</div>
           </div>
+        </td>
+        <td>
+          <%= check_box_tag "no_opinion#{i}", nil, true %> no opinion
           <script language="javascript">
             sliderObject<%=i%> = new Control.Slider("handle<%= i %>", "slider<%=i%>", {range:$R(0,99), sliderValue:$('vote<%= i %>').value, onChange:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, onSlide:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, disabled:true});
 
@@ -34,9 +37,6 @@
             value = $('vote<%=i%>').value;
             setValue('vote<%=i%>', $('value<%=i%>'), value);
           </script>
-        </td>
-        <td>
-          <%= check_box_tag "no_opinion#{i}", nil, true %> no opinion
         </td>
       </tr>
     <% end %>

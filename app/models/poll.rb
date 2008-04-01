@@ -17,7 +17,7 @@ class Poll < ActiveRecord::Base
       if count == 0
         0
       else
-        total / count.to_f
+        ((total / count.to_f)*100).round / 100.0
       end
     end
 
@@ -47,7 +47,14 @@ class Poll < ActiveRecord::Base
         result.quorum = ((result.total >= quorum_score) ? true : false)
       end
 
-      retval.sort! {|a,b| b.average <=> a.average}
+      retval.sort! do |a,b|
+        compare = (b.average <=> a.average)
+        if (compare == 0)
+          compare = (b.total <=> a.total)
+        end
+
+        compare
+      end
     end
 
     return retval
