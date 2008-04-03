@@ -7,8 +7,7 @@ describe "/polls/show.html.erb" do
     @poll = mock_model(Poll)
     @poll.stub!(:name).and_return("MyString")
     @poll.stub!(:instructions).and_return("MyText")
-    @candidates = ["foo", "bar", "baz", "xyzzy", "thud"]
-    @poll.stub!(:candidates).and_return(@candidates)
+    @poll.stub!(:results).and_return(nil)
 
     assigns[:poll] = @poll
   end
@@ -17,9 +16,6 @@ describe "/polls/show.html.erb" do
     render "/polls/show.html.erb"
     response.should have_text(/MyString/)
     response.should have_text(/MyText/)
-    @candidates.each do |candidate|
-      response.should have_text(/#{candidate}/)
-    end
   end
 end
 

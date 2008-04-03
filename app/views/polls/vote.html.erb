@@ -12,11 +12,14 @@
 
 <script language="javascript">
   sliderObject = [];
+  valueBox = [];
+  voteInput = [];
+  noOpinion = [];
 </script>
 
-<p>
+<p style="margin-top: 2em;">
   <b>Candidates:</b>
-  <% form_tag({:controller => :polls, :action => :record_vote, :id => @poll.id}) do %>
+  <% form_tag({:controller => :polls, :action => :record_vote, :key => @poll.key}, {:onsubmit => "return validateForm()"}) do %>
     <table>
     <% @poll.candidates.each_with_index do |candidate, i| %>
       <tr>
@@ -28,22 +31,26 @@
         </td>
         <td>
           <%= hidden_field_tag "vote#{i}", 50 %>
-          <div id="slider<%= i %>" style="background: gray; width: 200px; height: 25px;" onMouseDown="if ($('no_opinion<%=i%>').checked) $('no_opinion<%=i%>').click();">
-            <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="if ($('no_opinion<%=i%>').checked) $('no_opinion<%=i%>').click();">&nbsp;</div>
+          <div id="slider<%= i %>" style="background: #aaaaaa; width: 200px; height: 25px;" onMouseDown="if (noOpinion[<%=i%>].checked) noOpinion[<%=i%>].click();">
+            <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="if (noOpinion[<%=i%>].checked) noOpinion[<%=i%>].click();"></div>
           </div>
         </td>
         <td>
           <%= check_box_tag "no_opinion#{i}", nil, true, :onClick => "handleCheckboxClick(#{i}, this.checked);" %> no opinion
           <script language="javascript">
-            sliderObject[<%=i%>] = new Control.Slider("handle<%= i %>", "slider<%=i%>", {range:$R(0,99), sliderValue:$('vote<%= i %>').value, onChange:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, onSlide:function(v){setValue($('vote<%= i %>'), $('value<%= i %>'), v)}, disabled:true});
+            valueBox[<%=i%>] = $('value<%=i%>')
+            voteInput[<%=i%>] = $('vote<%=i%>')
+            noOpinion[<%=i%>] = $('no_opinion<%=i%>')
+            sliderObject[<%=i%>] = new Control.Slider("handle<%= i %>", "slider<%=i%>", {range:$R(0,99), sliderValue:voteInput[<%=i%>].value, onChange:function(v){setValue(voteInput[<%=i%>], valueBox[<%=i%>], v)}, onSlide:function(v){setValue(voteInput[<%=i%>], valueBox[<%=i%>], v)}, disabled:true});
 
             // Sync background color and slider to input value
-            if($('no_opinion<%=i%>').checked) {
-              $('value<%=i%>').innerHTML="X";
-              $('value<%=i%>').style.backgroundColor="#ffffff";
+            if(noOpinion[<%=i%>].checked) {
+              valueBox[<%=i%>].innerHTML="X";
+              valueBox[<%=i%>].style.backgroundColor="#ffffff";
             } else {
-              value = $('vote<%=i%>').value;
-              setValue($('vote<%=i%>'), $('value<%=i%>'), value);
+              value = voteInput[<%=i%>].value;
+              setValue(voteInput[<%=i%>], valueBox[<%=i%>], value);
+              sliderObject[<%=i%>].setEnabled();
             }
           </script>
         </td>
@@ -54,15 +61,31 @@
     <script language="javascript">
       function handleCheckboxClick(index, checked) {
         if (checked) {
-          valueBox = $('value'+index)
-          valueBox.innerHTML='X';
-          valueBox.style.backgroundColor='#ffffff';
+          valueBox[index].innerHTML='X';
+          valueBox[index].style.backgroundColor='#ffffff';
           sliderObject[index].setDisabled();
         } else {
-          value = $('vote'+index).value;
-          setValue($('vote'+index), $('value'+index), value);
+          value = voteInput[index].value;
+          setValue(voteInput[index], valueBox[index], value);
           sliderObject[index].setEnabled();
         }
+      }
+
+      function validateForm() {
+        name = $('voter_name').value;
+        if (name == null || name == "" || name.match(/^\W+$/)) {
+          alert("Please enter a name.");
+          return false;
+        }
+
+        for(i=0; i<noOpinion.length; i++) {
+          if(!noOpinion[i].checked) {
+            return true;
+          }
+        }
+
+        alert("You must have an opinion on something in order to vote!");
+        return false
       }
     </script>
 

@@ -31,7 +31,9 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
 
+  map.connect 'polls/admin/:key', :controller => 'polls', :action => 'admin'
+
   # Install the default routes as the lowest priority.
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+  map.connect ':controller/:action/:key'
+  map.connect ':controller/:action/:key.:format'
 end

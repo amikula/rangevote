@@ -13,10 +13,19 @@ class PollsController < ApplicationController
   # GET /polls/1
   # GET /polls/1.xml
   def show
-    @poll = Poll.find(params[:id])
+    @poll = Poll.find_by_key(params[:key])
 
     respond_to do |format|
       format.html # show.html.erb
+      format.xml  { render :xml => @poll }
+    end
+  end
+
+  def admin
+    @poll = Poll.find_by_admin_key(params[:key])
+
+    respond_to do |format|
+      format.html # admin.html.erb
       format.xml  { render :xml => @poll }
     end
   end
@@ -34,13 +43,15 @@ class PollsController < ApplicationController
 
   # GET /polls/1/edit
   def edit
-    @poll = Poll.find(params[:id])
+    @poll = Poll.find_by_admin_key(params[:key])
   end
 
   # POST /polls
   # POST /polls.xml
   def create
     @poll = Poll.new(params[:poll])
+
+    @poll.initialize_keys
 
     respond_to do |format|
       if params[:candidates]
@@ -54,7 +65,7 @@ class PollsController < ApplicationController
 
       if @poll.save
         flash[:notice] = 'Poll was successfully created.'
-        format.html { redirect_to(@poll) }
+        format.html { redirect_to :action => :admin, :key => @poll.admin_key }
         format.xml  { render :xml => @poll, :status => :created, :location => @poll }
       else
         format.html { render :action => "new" }
@@ -66,7 +77,7 @@ class PollsController < ApplicationController
   # PUT /polls/1
   # PUT /polls/1.xml
   def update
-    @poll = Poll.find(params[:id])
+    @poll = Poll.find_by_admin_key(params[:key])
 
     respond_to do |format|
       if @poll.update_attributes(params[:poll])
@@ -83,7 +94,7 @@ class PollsController < ApplicationController
   # DELETE /polls/1
   # DELETE /polls/1.xml
   def destroy
-    @poll = Poll.find(params[:id])
+    @poll = Poll.find_by_admin_key(params[:key])
     @poll.destroy
 
     respond_to do |format|
@@ -93,7 +104,7 @@ class PollsController < ApplicationController
   end
 
   def vote
-    @poll = Poll.find(params[:id])
+    @poll = Poll.find_by_key(params[:key])
 
     respond_to do |format|
       format.html
@@ -102,7 +113,7 @@ class PollsController < ApplicationController
   end
 
   def record_vote
-    poll = Poll.find(params[:id])
+    poll = Poll.find_by_key(params[:key])
     ratings = []
 
     i = 0
@@ -120,13 +131,13 @@ class PollsController < ApplicationController
     Vote.create({:poll_id => poll.id, :ratings => ratings, :name => params[:voter_name]})
 
     respond_to do |format|
-      format.html { redirect_to(poll)}
+      format.html { redirect_to :action => :show, :key => poll.key }
       format.xml  { head :ok }
     end
   end
 
   def results
-    @poll = Poll.find(params[:id])
+    @poll = Poll.find_by_key(params[:key])
 
     @results = [0]*@poll.candidates.size
     @poll.votes.each do |vote|

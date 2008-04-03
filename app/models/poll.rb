@@ -59,4 +59,18 @@ class Poll < ActiveRecord::Base
 
     return retval
   end
+
+  def initialize_keys
+    self.key = generate_key
+    self.admin_key = generate_key
+  end
+
+  private
+    @@key_chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + "_+".split("")
+
+    def generate_key(length=16)
+      retval = ""
+      length.downto(1) { retval << @@key_chars[rand(@@key_chars.length)] }
+      retval
+    end
 end
