@@ -14,8 +14,10 @@
   </p>
 
   <p>
-    <b>Candidates</b><br />
-    <%= text_area_tag :candidates, nil, :rows => 10 %>
+    <b>Candidates</b><br>
+    <% (0..9).each do |i| %>
+      <%= text_field_tag "candidate#{i}", nil, :style => "margin-top:0.5em;" %><br>
+    <% end %>
   </p>
 
   <p>

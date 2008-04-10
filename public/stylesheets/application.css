@@ -1,3 +1,13 @@
-.noquorum td {
+#wrapper {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#footer {
+  clear: both;
+}
+
+.noquorum {
   text-decoration: line-through;
 }

@@ -28,10 +28,16 @@
     <b>Results:</b>
     <table style="margin-top: 0.5em;">
     <% results.each do |result| %>
-      <tr class="<%=result.quorum? ? 'quorum' : 'noquorum' %>">
-        <td><%=h result.candidate %></td>
+      <tr>
+        <td>
+          <span class="<%=result.quorum? ? 'quorum' : 'noquorum' %>">
+            <%=h result.candidate %>
+          </span>
+        </td>
         <td<%= " style='background-color: #{range_color_for(result.average)};'" if result.quorum? %>>
-          <%= result.average %>
+          <span class="<%=result.quorum? ? 'quorum' : 'noquorum' %>">
+            <%= result.average %>
+          </span>
         </td>
       </tr>
     <% end %>

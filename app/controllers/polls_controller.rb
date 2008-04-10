@@ -54,14 +54,14 @@ class PollsController < ApplicationController
     @poll.initialize_keys
 
     respond_to do |format|
-      if params[:candidates]
-        candidates = []
-        params[:candidates].each_line do |candidate|
-          candidate.strip!
-          candidates << candidate
-        end
-        @poll.candidates = candidates
+      candidates = []
+      i = 0
+      while(candidate = params["candidate#{i}".to_sym])
+        candidate.strip!
+        candidates << candidate unless candidate.blank?
+        i += 1
       end
+      @poll.candidates = candidates
 
       if @poll.save
         flash[:notice] = 'Poll was successfully created.'

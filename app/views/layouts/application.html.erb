@@ -7,6 +7,26 @@
   <body>
     <%= javascript_include_tag :defaults %>
     <%= javascript_include_tag "slider" %>
-    <%= @content_for_layout %>
+
+    <div id="wrapper">
+      <div id="header">
+        Vote!
+      </div>
+      <div id="sitenav">
+        <ul>
+          <li>
+            <%= link_to "New Poll", :controller => :polls, :action => :new %>
+          </li>
+        </ul>
+      </div>
+      <div id="navlinks">
+      </div>
+      <div id="body">
+        <%= @content_for_layout %>
+      </div>
+      <div id="footer">
+        &copy;2008 SuperDuperApps.com
+      </div>
+    </div>
   </body>
 </html>
