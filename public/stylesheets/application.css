@@ -4,6 +4,16 @@
   margin-right: auto;
 }
 
+#sitenav ul {
+  padding: 0px;
+}
+
+#sitenav li {
+  display: inline;
+  list-style: none;
+  padding-right: 20px;
+}
+
 #footer {
   clear: both;
 }
