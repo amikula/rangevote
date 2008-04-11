@@ -1,0 +1,15 @@
+<% results ||= nil %>
+<% if results %>
+  <div style="margin-top: 2em; background-color: #dddddd; float: left; clear: both; padding: 1em;">
+    <b>Summary:</b>
+    <table style="margin-top: 0.5em; border-spacing: 2em 0.1em;">
+      <% winning = results.detect{|result| result.quorum?} -%>
+      <tr><td style="text-align: right">Top Candidate:</td><td><%=winning.candidate%></td></tr>
+      <tr><td style="text-align: right">Points:</td><td><%=winning.total%></td></tr>
+      <tr><td style="text-align: right">Average vote:</td><td><%=winning.average%></td></tr>
+      <tr><td style="text-align: right">Candidate vote count:</td><td><%=winning.count%></td></tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+      <tr><td style="text-align: right">Total Votes:</td><td><%=@poll.votes.count%></td></tr>
+    </table>
+  </div>
+<% end %>

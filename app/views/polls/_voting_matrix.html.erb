@@ -1,0 +1,22 @@
+<% poll ||= nil %>
+<% if poll %>
+  <div style="margin-top: 2em; background-color: #dddddd; float: left; clear: both; padding: 1em;">
+    <b>Votes:</b>
+    <table style="margin-top: 0.5em;">
+      <tr>
+        <th>Name</th>
+        <% @poll.candidates.each do |candidate| %>
+        <th><%=candidate%></th>
+        <% end %>
+      </tr>
+      <% @poll.votes.each do |vote| %>
+      <tr>
+        <td><%=vote.name%></td>
+        <% vote.ratings.each do |rating| %>
+        <td style="background-color: <%=range_color_for(rating)%>;"><%=rating%></td>
+        <% end %>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

@@ -1,0 +1,28 @@
+<% results ||= nil %>
+<% if results %>
+  <div style="margin-top: 2em; background-color: #dddddd; float: left; clear: both; padding: 1em;">
+    <b>Results:</b>
+    <table style="margin-top: 0.5em;">
+    <% results.each do |result| %>
+      <tr>
+        <td>
+          <span class="<%=result.quorum? ? 'quorum' : 'noquorum' %>">
+            <%=h result.candidate %>
+          </span>
+        </td>
+        <td<%= " style='background-color: #{range_color_for(result.average)};'" if result.quorum? %>>
+          <span class="<%=result.quorum? ? 'quorum' : 'noquorum' %>">
+            <%= result.average %>
+          </span>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+    <div style="margin-top: 0.5em; width: 250px;">
+      Note: <span style="text-decoration: line-through;">Strikethrough</span>
+      indicates that the candidate does not have a
+      <%= link_to "quorum", "http://rangevoting.org/RuleD.html" %>, and
+      therefore does not qualify to win.
+    </div>
+  </div>
+<% end %>
