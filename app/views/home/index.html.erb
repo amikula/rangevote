@@ -8,7 +8,9 @@ candidate with the highest average vote from all voters.  For more information,
 visit <%= link_to "The Center For Range Voting", "http://rangevoting.org" %>.
 </p>
 <p>
-To get started,
+To get started, try out this
+<%= link_to "sample poll", :controller => :polls, :action => :vote,
+            :key => "TRzgMVa_88yIhNPI" %>, or
 <%= link_to "create a new poll", :controller => :polls, :action => :new %>
 today!
 </p>
