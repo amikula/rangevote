@@ -1,0 +1,14 @@
+<h1>Welcome to Vote!</h1>
+<p>
+<strong>Vote!</strong> is a free web application that implements
+a voting system called <%= link_to "Range Voting", "http://rangevoting.org" %>.
+In a nutshell, Range Voting allows each voter to assign a number within a given
+range to each candidate.  At the end of the election, the winner is the
+candidate with the highest average vote from all voters.  For more information,
+visit <%= link_to "The Center For Range Voting", "http://rangevoting.org" %>.
+</p>
+<p>
+To get started,
+<%= link_to "create a new poll", :controller => :polls, :action => :new %>
+today!
+</p>

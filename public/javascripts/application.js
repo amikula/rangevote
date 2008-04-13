@@ -1,3 +1,8 @@
+// Add email de-obfuscation
+Event.addBehavior({
+  "a.obfuscated": EmailDecoder
+});
+
 function setValue(input, display, v)
 {
   input.value=Math.floor(v);

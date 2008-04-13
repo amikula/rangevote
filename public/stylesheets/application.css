@@ -24,6 +24,13 @@
   padding-right: 20px;
 }
 
+#body {
+  min-height: 300px;
+  height: auto !important;
+  height: 300px;
+  padding: 10px;
+}
+
 #footer {
   padding-top: 1em;
   clear: both;

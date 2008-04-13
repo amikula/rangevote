@@ -33,6 +33,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'polls/admin/:key', :controller => 'polls', :action => 'admin'
 
+  map.root :controller => 'home'
+  map.home ':page', :controller => 'home', :action => 'show', :page => /about|contact/
+
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:key'
   map.connect ':controller/:action/:key.:format'
