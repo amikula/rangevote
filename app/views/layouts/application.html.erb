@@ -2,6 +2,10 @@
       "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
+    <title>
+      <%= @title ||
+        params[:controller].capitalize + " " + params[:action].capitalize %>
+    </title>
     <%= stylesheet_link_tag :all %>
     <%= javascript_include_tag 'prototype', 'effects', 'dragdrop', 'controls',
         'slider', 'lowpro', 'email_decoder', 'application' %>

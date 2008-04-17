@@ -1,19 +1,9 @@
 class PollsController < ApplicationController
-  # GET /polls
-  # GET /polls.xml
-  def index
-    @polls = Poll.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @polls }
-    end
-  end
-
   # GET /polls/1
   # GET /polls/1.xml
   def show
     @poll = Poll.find_by_key(params[:key])
+    @title = @poll.name
 
     respond_to do |format|
       format.html # show.html.erb
@@ -23,6 +13,7 @@ class PollsController < ApplicationController
 
   def admin
     @poll = Poll.find_by_admin_key(params[:key])
+    @title = "Admin page for " + @poll.name
 
     respond_to do |format|
       format.html # admin.html.erb
@@ -34,6 +25,7 @@ class PollsController < ApplicationController
   # GET /polls/new.xml
   def new
     @poll = Poll.new
+    @title = "Create a new poll"
 
     respond_to do |format|
       format.html # new.html.erb
@@ -43,6 +35,7 @@ class PollsController < ApplicationController
 
   # GET /polls/1/edit
   def edit
+    @title = "Edit poll"
     @poll = Poll.find_by_admin_key(params[:key])
   end
 
@@ -105,6 +98,7 @@ class PollsController < ApplicationController
 
   def vote
     @poll = Poll.find_by_key(params[:key])
+    @title = "Vote: " + @poll.name
 
     respond_to do |format|
       format.html
@@ -133,26 +127,6 @@ class PollsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to :action => :show, :key => poll.key }
       format.xml  { head :ok }
-    end
-  end
-
-  def results
-    @poll = Poll.find_by_key(params[:key])
-
-    @results = [0]*@poll.candidates.size
-    @poll.votes.each do |vote|
-      @results.each_index do |i|
-        @results[i] += vote.ratings[i]
-      end
-    end
-
-    @results.each_index do |i|
-      @results[i] /= @poll.votes.count.to_f
-    end
-
-    respond_to do |format|
-      format.html
-      format.xml  { render :xml => @results }
     end
   end
 end
