@@ -71,7 +71,13 @@
         }
       }
 
+      formSubmitted = false;
+
       function validateForm() {
+        if (formSubmitted) {
+          return false;
+        }
+
         name = $('voter_name').value;
         if (name == null || name == "" || name.match(/^\W+$/)) {
           alert("Please enter a name.");
