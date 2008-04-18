@@ -99,9 +99,7 @@ class PollsController < ApplicationController
   def delete_votes
     @poll = Poll.find_by_admin_key(params[:key])
 
-    logger.debug "going"
     params[:vote].each do |vote_id|
-      logger.debug vote_id
       @poll.votes.find(vote_id).destroy
     end
 
