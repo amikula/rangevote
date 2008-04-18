@@ -77,10 +77,12 @@
         if (formSubmitted) {
           return false;
         }
+        formSubmitted = true;
 
         name = $('voter_name').value;
         if (name == null || name == "" || name.match(/^\W+$/)) {
           alert("Please enter a name.");
+          formSubmitted = false;
           return false;
         }
 
@@ -91,6 +93,7 @@
         }
 
         alert("You must have an opinion on something in order to vote!");
+        formSubmitted = false;
         return false
       }
     </script>

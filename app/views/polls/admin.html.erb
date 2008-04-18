@@ -26,5 +26,5 @@
 <% if results %>
   <%= render :partial => "summary", :locals => {:results => results} %>
   <%= render :partial => "results", :locals => {:results => results} %>
-  <%= render :partial => "voting_matrix", :locals => {:poll => @poll} %>
+  <%= render :partial => "voting_matrix", :locals => {:poll => @poll, :admin => true} %>
 <% end %>

@@ -96,6 +96,21 @@ class PollsController < ApplicationController
     end
   end
 
+  def delete_votes
+    @poll = Poll.find_by_admin_key(params[:key])
+
+    logger.debug "going"
+    params[:vote].each do |vote_id|
+      logger.debug vote_id
+      @poll.votes.find(vote_id).destroy
+    end
+
+    respond_to do |format|
+      format.html { redirect_to :action => :admin, :key => @poll.admin_key }
+      format.xml  { head :ok }
+    end
+  end
+
   def vote
     @poll = Poll.find_by_key(params[:key])
     @title = "Vote: " + @poll.name
