@@ -1,22 +1,6 @@
 <h1>Editing poll</h1>
 
-<%= error_messages_for :poll %>
-
-<% form_for(@poll) do |f| %>
-  <p>
-    <b>Name</b><br />
-    <%= f.text_field :name %>
-  </p>
-
-  <p>
-    <b>Instructions</b><br />
-    <%= f.text_area :instructions %>
-  </p>
-
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-<% end %>
+<%= render :partial => "poll_form", :locals => { :action => :update } %>
 
 <%= link_to 'Show', @poll %> |
 <%= link_to 'Back', polls_path %>

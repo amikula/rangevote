@@ -1,6 +1,7 @@
 class Poll < ActiveRecord::Base
   serialize :candidates
   has_many :votes
+  has_one :poll_options
 
   Result = Struct.new(:candidate, :total, :count, :quorum)
   class Result

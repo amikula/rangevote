@@ -57,3 +57,6 @@ Rails::Initializer.run do |config|
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
 end
+
+ENV['RECAPTCHA_PUBLIC_KEY'] = "6LeCqAEAAAAAAIuGnSugfj4c1Io0dO-Zy-haM4HS"
+ENV['RECAPTCHA_PRIVATE_KEY'] = "6LeCqAEAAAAAADA3JYGRv6THm-PRUNznd9xFzx72"

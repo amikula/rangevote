@@ -1,15 +1,25 @@
+<h1>Admin Page</h1>
 <p>
-  <b>Admin Link (save this, you'll need it!):</b><br>
-  <% admin_params = {:only_path => false, :action => :admin, :key => @poll.admin_key} %>
-  <%= link_to h(url_for admin_params), admin_params %>
+  Bookmark this page.  You'll need to return here in order to review results,
+  and to edit the poll or remove extra votes.
 </p>
 
 <p>
-  <b>Public Link (send for voting):</b><br>
+  <%= link_to "Edit Poll", :action => :edit, :key => @poll.admin_key %>
+</p>
+
+<p>
+  <b>Voting Link (email this link to your voters):</b><br>
   <% public_params = {:only_path => false, :action => :vote, :key => @poll.key} %>
   <%= link_to h(url_for public_params), public_params %>
 </p>
 
+<p>
+  <b>Results Link (email this link after poll ends):</b><br>
+  <% public_params = {:only_path => false, :action => :show, :key => @poll.key} %>
+  <%= link_to h(url_for public_params), public_params %>
+</p>
+<br><br>
 <p>
   <b>Name:</b>
   <%=h @poll.name %>

@@ -1,7 +1,12 @@
-<p>
-  <b>Name:</b>
-  <%=h @poll.name %>
-</p>
+<% unless @vote.errors.blank? %>
+  <div class="error">
+  <% @vote.errors.each do |attr_name, message| %>
+    <%= message %>
+  <% end %>
+  </div>
+<% end %>
+
+<h1><%=h @poll.name %></h1>
 
 <p>
   <b>Instructions:</b><br>
@@ -27,16 +32,16 @@
           <%=h candidate %>
         </td>
         <td id="value<%=i%>" style="padding: 5px; border: 2px solid black; width: 1em;">
-          X
+          <%= @vote.ratings[i] %>
         </td>
         <td>
-          <%= hidden_field_tag "vote#{i}", 50 %>
+          <%= hidden_field_tag "vote#{i}", @vote.ratings[i] == 'X' ? 50 : @vote.ratings[i] %>
           <div id="slider<%= i %>" style="background: #aaaaaa; width: 200px; height: 25px;" onMouseDown="if (noOpinion[<%=i%>].checked) noOpinion[<%=i%>].click();">
             <div id="handle<%= i %>" style="background: green; width: 10px; height: 25px;" onMouseDown="if (noOpinion[<%=i%>].checked) noOpinion[<%=i%>].click();"></div>
           </div>
         </td>
         <td>
-          <%= check_box_tag "no_opinion#{i}", nil, true, :onClick => "handleCheckboxClick(#{i}, this.checked);" %> no opinion
+          <%= check_box_tag "no_opinion#{i}", nil, @vote.ratings[i] == 'X', :onClick => "handleCheckboxClick(#{i}, this.checked);" %> no opinion
           <script language="javascript">
             valueBox[<%=i%>] = $('value<%=i%>')
             voteInput[<%=i%>] = $('vote<%=i%>')
@@ -98,7 +103,17 @@
       }
     </script>
 
-    Name: <%= text_field_tag "voter_name" %><br>
+    <p>
+      <b>Your Name:</b><br>
+      <%= text_field_tag "voter_name", @vote.name %><br>
+    </p>
+
+    <p>
+    <br>
+    <b>Please enter the two words in the image into the box below:</b>
+    <%= recaptcha_tags :display => {:theme => "white"} %>
+    </p>
+    <br>
     <%= submit_tag "Vote" %>
   <% end %>
 </p>

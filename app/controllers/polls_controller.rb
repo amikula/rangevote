@@ -25,6 +25,7 @@ class PollsController < ApplicationController
   # GET /polls/new.xml
   def new
     @poll = Poll.new
+    @poll.poll_options = PollOptions.new
     @title = "Create a new poll"
 
     respond_to do |format|
@@ -37,25 +38,22 @@ class PollsController < ApplicationController
   def edit
     @title = "Edit poll"
     @poll = Poll.find_by_admin_key(params[:key])
+    @poll.poll_options ||= PollOptions.new
   end
 
   # POST /polls
   # POST /polls.xml
   def create
     @poll = Poll.new(params[:poll])
+    @poll.poll_options ||= PollOptions.new
+    @poll.poll_options.enable_captcha = params[:enable_captcha]
+
+    @poll.candidates = posted_candidates
+
 
     @poll.initialize_keys
 
     respond_to do |format|
-      candidates = []
-      i = 0
-      while(candidate = params["candidate#{i}".to_sym])
-        candidate.strip!
-        candidates << candidate unless candidate.blank?
-        i += 1
-      end
-      @poll.candidates = candidates
-
       if @poll.save
         flash[:notice] = 'Poll was successfully created.'
         format.html { redirect_to :action => :admin, :key => @poll.admin_key }
@@ -71,11 +69,15 @@ class PollsController < ApplicationController
   # PUT /polls/1.xml
   def update
     @poll = Poll.find_by_admin_key(params[:key])
+    @poll.poll_options ||= PollOptions.new
+    @poll.poll_options.enable_captcha = params[:enable_captcha]
+    @poll.candidates = posted_candidates
 
     respond_to do |format|
+      @poll.poll_options.save
       if @poll.update_attributes(params[:poll])
         flash[:notice] = 'Poll was successfully updated.'
-        format.html { redirect_to(@poll) }
+        format.html { redirect_to(:action => :admin, :key => @poll.admin_key) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -112,6 +114,8 @@ class PollsController < ApplicationController
   def vote
     @poll = Poll.find_by_key(params[:key])
     @title = "Vote: " + @poll.name
+    @vote = Vote.new
+    @vote.ratings = ['X']*@poll.candidates.size
 
     respond_to do |format|
       format.html
@@ -120,7 +124,7 @@ class PollsController < ApplicationController
   end
 
   def record_vote
-    poll = Poll.find_by_key(params[:key])
+    @poll = Poll.find_by_key(params[:key])
     ratings = []
 
     i = 0
@@ -135,11 +139,33 @@ class PollsController < ApplicationController
       i += 1
     end
 
-    Vote.create({:poll_id => poll.id, :ratings => ratings, :name => params[:voter_name]})
+    @vote = Vote.new({:poll_id => @poll.id, :ratings => ratings, :name => params[:voter_name]})
 
-    respond_to do |format|
-      format.html { redirect_to :action => :show, :key => poll.key }
-      format.xml  { head :ok }
+    if(verify_recaptcha @vote)
+      @vote.save!
+
+      respond_to do |format|
+        format.html { redirect_to :action => :show, :key => @poll.key }
+        format.xml  { head :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { render :action => :vote, :key => @poll.key }
+        format.xml  { head :ok }
+      end
     end
   end
+
+  private
+    def posted_candidates
+      candidates = []
+      i = 0
+      while(candidate = params["candidate#{i}".to_sym])
+        candidate.strip!
+        candidates << candidate unless candidate.blank?
+        i += 1
+      end
+
+      return candidates
+    end
 end

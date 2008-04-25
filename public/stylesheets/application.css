@@ -39,3 +39,11 @@
 .noquorum {
   text-decoration: line-through;
 }
+
+.error {
+  border: 1px solid red;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2px;
+  color: red;
+}

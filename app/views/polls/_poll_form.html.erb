@@ -1,0 +1,31 @@
+<% action ||= :create %>
+<%= error_messages_for :poll %>
+
+<% form_for(@poll, :url => { :action => action, :key => @poll.admin_key }) do |f| %>
+  <p>
+    <b>Name</b><br />
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <b>Instructions</b><br>
+    <%= f.text_area :instructions %>
+  </p>
+
+  <p>
+    <b>Poll Options</b><br>
+    Enable CAPTCHA: <%= check_box_tag "enable_captcha", "1", @poll.poll_options.enable_captcha %><br>
+    <em>CAPTCHA is a common tool for protecting your poll from scripting attacks</em>
+  </p>
+
+  <p>
+    <b>Candidates</b><br>
+    <% (0..9).each do |i| %>
+      <%= text_field_tag "candidate#{i}", @poll.candidates ? @poll.candidates[i] : "", :style => "margin-top:0.5em;" %><br>
+    <% end %>
+  </p>
+
+  <p>
+    <%= f.submit action.to_s.capitalize %>
+  </p>
+<% end %>
