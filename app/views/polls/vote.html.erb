@@ -108,11 +108,13 @@
       <%= text_field_tag "voter_name", @vote.name %><br>
     </p>
 
+    <% if @poll.poll_options.enable_captcha %>
     <p>
     <br>
     <b>Please enter the two words in the image into the box below:</b>
     <%= recaptcha_tags :display => {:theme => "white"} %>
     </p>
+    <% end %>
     <br>
     <%= submit_tag "Vote" %>
   <% end %>

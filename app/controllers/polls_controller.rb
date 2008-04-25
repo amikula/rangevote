@@ -141,7 +141,7 @@ class PollsController < ApplicationController
 
     @vote = Vote.new({:poll_id => @poll.id, :ratings => ratings, :name => params[:voter_name]})
 
-    if(verify_recaptcha @vote)
+    if(!@poll.poll_options.enable_captcha || verify_recaptcha(@vote))
       @vote.save!
 
       respond_to do |format|
