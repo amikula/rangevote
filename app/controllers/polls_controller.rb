@@ -113,6 +113,7 @@ class PollsController < ApplicationController
 
   def vote
     @poll = Poll.find_by_key(params[:key])
+    @poll.poll_options ||= PollOptions.new
     @title = "Vote: " + @poll.name
     @vote = Vote.new
     @vote.ratings = ['X']*@poll.candidates.size
