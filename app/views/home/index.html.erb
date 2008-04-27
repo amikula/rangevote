@@ -8,7 +8,9 @@ candidate with the highest average vote from all voters.  For more information,
 visit <%= link_to "The Center For Range Voting", "http://rangevoting.org" %>.
 </p>
 <p>
-To get started, vote for your
+To get started, vote in the
+<%= link_to "2008 Presidential Election", :controller => :polls,
+            :action => :vote, :key => "h6QMzvPAuxXygRhk" %>, or your
 <%= link_to "favorite Pixar movie", :controller => :polls, :action => :vote,
             :key => "TRzgMVa_88yIhNPI" %>, or the
 <%= link_to "worst dictator of all time", :controller => :polls,
