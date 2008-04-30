@@ -117,5 +117,8 @@
     <% end %>
     <br>
     <%= submit_tag "Vote" %>
+    <p>
+    Note: Results for this poll are open.  You may view the <%= link_to "results page", :action=>:show, :key=>@poll.key %> at any time.
+    </p>
   <% end %>
 </p>
