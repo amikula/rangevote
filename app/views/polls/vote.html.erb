@@ -105,7 +105,7 @@
 
     <p>
       <b>Your Name:</b><br>
-      <%= text_field_tag "voter_name", @vote.name %><br>
+      <%= text_field_tag "voter_name", @vote.name, :size => 12, :maxlength => 30 %><br>
     </p>
 
     <% if @poll.poll_options.enable_captcha %>
