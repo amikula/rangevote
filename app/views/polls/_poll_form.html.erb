@@ -18,11 +18,35 @@
     <em>CAPTCHA is a common tool for protecting your poll from scripting attacks</em>
   </p>
 
+  <script language="javascript">
+    current_fields = <%= @poll.candidates ? @poll.candidates.size : 10 %>;
+
+    function add_candidates(num_candidates) {
+      new_fields = current_fields + num_candidates;
+      for(; current_fields < new_fields; current_fields++) {
+        element = document.createElement("input");
+        with(element) {
+          setAttribute("id", "candidate" + current_fields);
+          setAttribute("name", "candidate" + current_fields);
+          setAttribute("type", "text");
+          setAttribute("style", "margin-top:0.5em;");
+          setAttribute("value", "");
+        }
+
+        $('candidates').appendChild(element);
+        $('candidates').appendChild(document.createElement("br"));
+        //$('candidates').innerHTML += '<input id="candidate' + current_fields + '" name="candidate' + current_fields + '" style="margin-top:0.5em;" type="text" value="" /><br>'
+      }
+    }
+  </script>
   <p>
+    <div id="candidates" style="margin=top: 0px;">
     <b>Candidates</b><br>
-    <% (0..9).each do |i| %>
-      <%= text_field_tag "candidate#{i}", @poll.candidates ? @poll.candidates[i] : "", :style => "margin-top:0.5em;" %><br>
-    <% end %>
+      <% (0..(@poll.candidates ? @poll.candidates.size-1 : 9)).each do |i| %>
+        <%= text_field_tag "candidate#{i}", @poll.candidates ? @poll.candidates[i] : "", :style => "margin-top:0.5em;" %><br>
+      <% end %>
+    </div>
+    <a href="javascript:add_candidates(5)">add more candidates</a>
   </p>
 
   <p>
