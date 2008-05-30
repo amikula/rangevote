@@ -56,6 +56,9 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+
+  # Disable request forgery protection in test environment
+  config.action_controller.allow_forgery_protection    = false
 end
 
 ENV['RECAPTCHA_PUBLIC_KEY'] = "6LeCqAEAAAAAAIuGnSugfj4c1Io0dO-Zy-haM4HS"
