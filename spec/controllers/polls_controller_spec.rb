@@ -1,76 +1,15 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PollsController do
-  describe "handling GET /polls" do
+  describe "handling GET /polls/abc" do
 
     before(:each) do
-      @poll = mock_model(Poll)
-      Poll.stub!(:find).and_return([@poll])
+      @poll = mock_model(Poll, :name => "Mock Poll")
+      Poll.stub!(:find_by_key).and_return(@poll)
     end
   
     def do_get
-      get :index
-    end
-  
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render index template" do
-      do_get
-      response.should render_template('index')
-    end
-  
-    it "should find all polls" do
-      Poll.should_receive(:find).with(:all).and_return([@poll])
-      do_get
-    end
-  
-    it "should assign the found polls for the view" do
-      do_get
-      assigns[:polls].should == [@poll]
-    end
-  end
-
-  describe "handling GET /polls.xml" do
-
-    before(:each) do
-      @poll = mock_model(Poll, :to_xml => "XML")
-      Poll.stub!(:find).and_return(@poll)
-    end
-  
-    def do_get
-      @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index
-    end
-  
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should find all polls" do
-      Poll.should_receive(:find).with(:all).and_return([@poll])
-      do_get
-    end
-  
-    it "should render the found polls as xml" do
-      @poll.should_receive(:to_xml).and_return("XML")
-      do_get
-      response.body.should == "XML"
-    end
-  end
-
-  describe "handling GET /polls/1" do
-
-    before(:each) do
-      @poll = mock_model(Poll)
-      Poll.stub!(:find).and_return(@poll)
-    end
-  
-    def do_get
-      get :show, :id => "1"
+      get :show, :key => "abc"
     end
 
     it "should be successful" do
@@ -84,7 +23,7 @@ describe PollsController do
     end
   
     it "should find the poll requested" do
-      Poll.should_receive(:find).with("1").and_return(@poll)
+      Poll.should_receive(:find_by_key).with("abc").and_return(@poll)
       do_get
     end
   
@@ -94,16 +33,16 @@ describe PollsController do
     end
   end
 
-  describe "handling GET /polls/1.xml" do
+  describe "handling GET /polls/abc.xml" do
 
     before(:each) do
-      @poll = mock_model(Poll, :to_xml => "XML")
-      Poll.stub!(:find).and_return(@poll)
+      @poll = mock_model(Poll, :to_xml => "XML", :name => "Mock Poll")
+      Poll.stub!(:find_by_key).and_return(@poll)
     end
   
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :show, :id => "1"
+      get :show, :key => "abc"
     end
 
     it "should be successful" do
@@ -112,7 +51,7 @@ describe PollsController do
     end
   
     it "should find the poll requested" do
-      Poll.should_receive(:find).with("1").and_return(@poll)
+      Poll.should_receive(:find_by_key).with("abc").and_return(@poll)
       do_get
     end
   
@@ -127,6 +66,7 @@ describe PollsController do
 
     before(:each) do
       @poll = mock_model(Poll)
+      @poll.stub!(:poll_options=)
       Poll.stub!(:new).and_return(@poll)
     end
   
@@ -160,15 +100,17 @@ describe PollsController do
     end
   end
 
-  describe "handling GET /polls/1/edit" do
+  describe "handling GET /polls/abc/edit" do
 
     before(:each) do
       @poll = mock_model(Poll)
-      Poll.stub!(:find).and_return(@poll)
+      @poll.stub!(:poll_options)
+      @poll.stub!(:poll_options=)
+      Poll.stub!(:find_by_admin_key).and_return(@poll)
     end
   
     def do_get
-      get :edit, :id => "1"
+      get :edit, :key => "abc"
     end
 
     it "should be successful" do
@@ -182,7 +124,7 @@ describe PollsController do
     end
   
     it "should find the poll requested" do
-      Poll.should_receive(:find).and_return(@poll)
+      Poll.should_receive(:find_by_admin_key).and_return(@poll)
       do_get
     end
   
@@ -195,7 +137,11 @@ describe PollsController do
   describe "handling POST /polls" do
 
     before(:each) do
-      @poll = mock_model(Poll, :to_param => "1")
+      @poll = mock_model(Poll, :to_param => "abc")
+      @poll.stub!(:poll_options).and_return(PollOptions.new)
+      @poll.stub!(:candidates=)
+      @poll.stub!(:initialize_keys)
+      @poll.stub!(:admin_key).and_return("abc")
       Poll.stub!(:new).and_return(@poll)
     end
     
@@ -211,9 +157,9 @@ describe PollsController do
         do_post
       end
 
-      it "should redirect to the new poll" do
+      it "should redirect to admin page for the new poll" do
         do_post
-        response.should redirect_to(poll_url("1"))
+        response.should redirect_to(:action => :admin, :key => "abc")
       end
       
     end
@@ -233,22 +179,24 @@ describe PollsController do
     end
   end
 
-  describe "handling PUT /polls/1" do
+  describe "handling PUT /polls/abc" do
 
     before(:each) do
-      @poll = mock_model(Poll, :to_param => "1")
-      Poll.stub!(:find).and_return(@poll)
+      @poll = mock_model(Poll, :admin_key => "abc")
+      @poll.stub!(:poll_options).and_return(PollOptions.new)
+      @poll.stub!(:candidates=)
+      Poll.stub!(:find_by_admin_key).and_return(@poll)
     end
     
     describe "with successful update" do
 
       def do_put
         @poll.should_receive(:update_attributes).and_return(true)
-        put :update, :id => "1"
+        put :update, :key => "abc"
       end
 
       it "should find the poll requested" do
-        Poll.should_receive(:find).with("1").and_return(@poll)
+        Poll.should_receive(:find_by_admin_key).with("abc").and_return(@poll)
         do_put
       end
 
@@ -264,7 +212,7 @@ describe PollsController do
 
       it "should redirect to the poll" do
         do_put
-        response.should redirect_to(poll_url("1"))
+        response.should redirect_to(:action => :admin, :key => "abc")
       end
 
     end
@@ -273,7 +221,7 @@ describe PollsController do
 
       def do_put
         @poll.should_receive(:update_attributes).and_return(false)
-        put :update, :id => "1"
+        put :update, :key => "abc"
       end
 
       it "should re-render 'edit'" do
@@ -284,19 +232,19 @@ describe PollsController do
     end
   end
 
-  describe "handling DELETE /polls/1" do
+  describe "handling DELETE /polls/abc" do
 
     before(:each) do
       @poll = mock_model(Poll, :destroy => true)
-      Poll.stub!(:find).and_return(@poll)
+      Poll.stub!(:find_by_admin_key).and_return(@poll)
     end
   
     def do_delete
-      delete :destroy, :id => "1"
+      delete :destroy, :key => "abc"
     end
 
     it "should find the poll requested" do
-      Poll.should_receive(:find).with("1").and_return(@poll)
+      Poll.should_receive(:find_by_admin_key).with("abc").and_return(@poll)
       do_delete
     end
   
