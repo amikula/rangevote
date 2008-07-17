@@ -34,7 +34,7 @@ class Poll < ActiveRecord::Base
       candidates.each{|candidate| retval << Result.new(candidate, 0, 0, false)}
       votes.each do |vote|
         retval.each_index do |i|
-          if vote.ratings[i] != "X"
+          if vote.ratings.size > i && vote.ratings[i] != "X"
             retval[i].total += vote.ratings[i]
             retval[i].count += 1
           end
