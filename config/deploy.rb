@@ -19,7 +19,7 @@ namespace :vlad do
   ### Extending 'vlad:update' with 'gems:geminstaller' and stuff
   desc "Update hooks."
   remote_task :update, :roles => :app do
-    #run "cp #{current_path}/config/database_init.yml #{current_path}/config/database.yml"
+    run "cp #{current_path}/config/database_init.yml #{current_path}/config/database.yml"
     Rake::Task['gems:geminstaller'].invoke
   end
 end
