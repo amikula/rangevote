@@ -7,4 +7,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'vlad'
 require 'tasks/rails'
+
+Vlad.load(:app => nil, :scm => :git)
